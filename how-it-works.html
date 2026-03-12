@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>How Veloris Works — Focus. Block. Dominate.</title>
+<meta name="description" content="A deep dive into how Veloris works — system-level blocking, the Distraction Negotiator AI, discipline tracking, and everything in between."/>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#07090f;--blue:#4f7fff;--blue2:#6c9fff;--blue3:#2a4fcc;
+  --border:rgba(255,255,255,0.07);--border2:rgba(79,127,255,0.2);
+  --text:#cdd5f0;--muted:#4a5280;--muted2:#6b7490;--card:rgba(11,13,22,0.9);
+  --green:#4ade80;--red:#f87171;--yellow:#fbbf24;--purple:#a78bfa;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;line-height:1.7;overflow-x:hidden;}
+::-webkit-scrollbar{width:4px;}::-webkit-scrollbar-thumb{background:var(--blue3);border-radius:2px;}
+
+.grid-bg{position:fixed;inset:0;z-index:0;pointer-events:none;background-image:linear-gradient(rgba(79,127,255,0.02) 1px,transparent 1px),linear-gradient(90deg,rgba(79,127,255,0.02) 1px,transparent 1px);background-size:60px 60px;mask-image:radial-gradient(ellipse 80% 50% at 50% 0%,black 30%,transparent 100%);}
+
+/* NAV */
+nav{position:sticky;top:0;z-index:100;padding:18px 60px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);background:rgba(7,9,15,0.95);backdrop-filter:blur(20px);}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none;}
+.nav-logo span{font-family:'Syne',sans-serif;font-weight:700;font-size:20px;color:#fff;}
+.nav-right{display:flex;align-items:center;gap:20px;}
+.back-link{color:var(--muted2);text-decoration:none;font-size:14px;transition:color 0.2s;}
+.back-link:hover{color:#fff;}
+.btn-primary{padding:9px 20px;background:var(--blue);border:none;border-radius:8px;color:#fff;font-size:14px;font-weight:600;text-decoration:none;transition:all 0.2s;box-shadow:0 4px 20px rgba(79,127,255,0.3);}
+.btn-primary:hover{background:var(--blue2);}
+
+/* PAGE NAV */
+.page-nav{position:sticky;top:61px;z-index:90;border-bottom:1px solid var(--border);background:rgba(7,9,15,0.92);backdrop-filter:blur(16px);}
+.page-nav-inner{max-width:1100px;margin:0 auto;padding:0 60px;display:flex;gap:0;overflow-x:auto;}
+.page-nav a{padding:14px 20px;font-size:13px;font-weight:600;color:var(--muted2);text-decoration:none;white-space:nowrap;border-bottom:2px solid transparent;transition:all 0.2s;}
+.page-nav a:hover{color:#fff;}
+.page-nav a.active{color:var(--blue2);border-bottom-color:var(--blue);}
+
+/* HERO */
+.page-hero{position:relative;z-index:1;padding:90px 60px 70px;max-width:1100px;margin:0 auto;}
+.page-tag{display:inline-flex;align-items:center;gap:8px;padding:5px 14px;border-radius:100px;border:1px solid var(--border2);background:rgba(79,127,255,0.06);font-size:11px;font-weight:700;color:var(--blue2);letter-spacing:0.08em;margin-bottom:20px;}
+.page-hero h1{font-family:'Syne',sans-serif;font-size:clamp(38px,5.5vw,72px);font-weight:800;color:#fff;line-height:1.05;letter-spacing:-0.025em;margin-bottom:20px;}
+.page-hero h1 .accent{background:linear-gradient(135deg,var(--blue),var(--blue2),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.page-hero .lead{font-size:17px;color:var(--muted2);max-width:620px;line-height:1.8;}
+
+/* LAYOUT */
+.page-layout{position:relative;z-index:1;max-width:1100px;margin:0 auto;padding:0 60px 100px;}
+
+/* SECTION COMMON */
+.page-section{margin-bottom:100px;padding-top:20px;}
+.section-eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:11px;font-weight:700;color:var(--blue);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:14px;}
+.section-eyebrow::before{content:'';width:20px;height:1px;background:var(--blue);}
+.section-eyebrow.purple{color:var(--purple);}
+.section-eyebrow.purple::before{background:var(--purple);}
+.section-eyebrow.green{color:var(--green);}
+.section-eyebrow.green::before{background:var(--green);}
+.page-section h2{font-family:'Syne',sans-serif;font-size:clamp(28px,3.5vw,44px);font-weight:800;color:#fff;line-height:1.1;letter-spacing:-0.02em;margin-bottom:16px;}
+.page-section .section-lead{font-size:16px;color:var(--muted2);max-width:600px;line-height:1.8;margin-bottom:48px;}
+
+/* STEPS */
+.steps-grid{display:flex;flex-direction:column;gap:0;}
+.step-row{display:grid;grid-template-columns:72px 1fr;gap:28px;padding:36px 0;border-bottom:1px solid var(--border);position:relative;}
+.step-row:last-child{border-bottom:none;}
+.step-num-wrap{display:flex;flex-direction:column;align-items:center;gap:0;}
+.step-circle{width:44px;height:44px;border-radius:50%;border:1px solid var(--border2);background:rgba(79,127,255,0.06);display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:13px;font-weight:500;color:var(--blue);flex-shrink:0;}
+.step-line{width:1px;flex:1;background:linear-gradient(180deg,var(--border2),transparent);margin-top:8px;}
+.step-row:last-child .step-line{display:none;}
+.step-content{padding-top:10px;padding-bottom:16px;}
+.step-title{font-family:'Syne',sans-serif;font-size:20px;font-weight:700;color:#fff;margin-bottom:10px;}
+.step-desc{font-size:15px;color:var(--muted2);line-height:1.8;margin-bottom:16px;}
+.step-note{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;background:rgba(79,127,255,0.06);border:1px solid var(--border2);border-radius:6px;font-size:12px;color:var(--blue2);font-family:'DM Mono',monospace;}
+
+/* FEATURES GRID */
+.features-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:8px;}
+.feat-card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:28px;position:relative;overflow:hidden;transition:all 0.3s;}
+.feat-card::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 50% at 0% 0%,rgba(79,127,255,0.05) 0%,transparent 60%);opacity:0;transition:opacity 0.3s;}
+.feat-card:hover{border-color:var(--border2);transform:translateY(-3px);box-shadow:0 16px 48px rgba(0,0,0,0.4);}
+.feat-card:hover::before{opacity:1;}
+.feat-card.purple-card{border-color:rgba(167,139,250,0.2);}
+.feat-card.purple-card::before{background:radial-gradient(ellipse 60% 50% at 0% 0%,rgba(167,139,250,0.07) 0%,transparent 60%);}
+.feat-card.purple-card:hover{border-color:rgba(167,139,250,0.45);box-shadow:0 16px 48px rgba(124,58,237,0.12);}
+.feat-icon{width:46px;height:46px;border-radius:12px;background:rgba(79,127,255,0.1);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:18px;}
+.feat-icon.purple{background:rgba(167,139,250,0.1);border-color:rgba(167,139,250,0.3);}
+.feat-icon.green{background:rgba(74,222,128,0.1);border-color:rgba(74,222,128,0.3);}
+.feat-name{font-family:'Syne',sans-serif;font-size:17px;font-weight:700;color:#fff;margin-bottom:8px;}
+.feat-desc{font-size:13px;color:var(--muted2);line-height:1.75;}
+.feat-tag{display:inline-block;margin-top:14px;font-size:10px;font-weight:700;color:var(--blue);letter-spacing:0.08em;background:rgba(79,127,255,0.08);border:1px solid rgba(79,127,255,0.15);padding:3px 9px;border-radius:4px;}
+.feat-tag.purple{color:var(--purple);background:rgba(167,139,250,0.08);border-color:rgba(167,139,250,0.2);}
+.feat-tag.green{color:var(--green);background:rgba(74,222,128,0.08);border-color:rgba(74,222,128,0.2);}
+
+/* AI SECTION */
+.ai-hero-box{background:rgba(15,12,28,0.95);border:1px solid rgba(167,139,250,0.25);border-radius:24px;padding:48px;margin-bottom:48px;position:relative;overflow:hidden;}
+.ai-hero-box::before{content:'';position:absolute;top:-100px;right:-100px;width:400px;height:400px;background:radial-gradient(circle,rgba(167,139,250,0.08) 0%,transparent 60%);pointer-events:none;}
+.ai-hero-box::after{content:'';position:absolute;bottom:-80px;left:-80px;width:300px;height:300px;background:radial-gradient(circle,rgba(79,127,255,0.06) 0%,transparent 60%);pointer-events:none;}
+.ai-label{display:inline-flex;align-items:center;gap:8px;padding:5px 12px;background:rgba(167,139,250,0.1);border:1px solid rgba(167,139,250,0.25);border-radius:6px;font-size:11px;font-weight:700;color:var(--purple);letter-spacing:0.08em;margin-bottom:18px;}
+.ai-hero-box h3{font-family:'Syne',sans-serif;font-size:28px;font-weight:800;color:#fff;margin-bottom:14px;position:relative;z-index:1;}
+.ai-hero-box p{font-size:15px;color:var(--muted2);line-height:1.85;max-width:680px;position:relative;z-index:1;}
+
+/* AI FLOW */
+.ai-flow{display:flex;flex-direction:column;gap:12px;margin:40px 0;}
+.ai-flow-step{display:grid;grid-template-columns:36px 1fr;gap:16px;align-items:start;}
+.ai-flow-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+.ai-flow-icon.trigger{background:rgba(248,113,113,0.1);border:1px solid rgba(248,113,113,0.2);}
+.ai-flow-icon.think{background:rgba(167,139,250,0.1);border:1px solid rgba(167,139,250,0.2);}
+.ai-flow-icon.decide{background:rgba(79,127,255,0.1);border:1px solid rgba(79,127,255,0.2);}
+.ai-flow-icon.result{background:rgba(74,222,128,0.1);border:1px solid rgba(74,222,128,0.2);}
+.ai-flow-content{}
+.ai-flow-title{font-size:14px;font-weight:700;color:#fff;margin-bottom:4px;}
+.ai-flow-desc{font-size:13px;color:var(--muted2);line-height:1.7;}
+
+/* OUTCOME CARDS */
+.outcome-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:32px;}
+.outcome-card{border-radius:14px;padding:22px;text-align:center;}
+.outcome-card.deny{background:rgba(248,113,113,0.05);border:1px solid rgba(248,113,113,0.15);}
+.outcome-card.negotiate{background:rgba(251,191,36,0.05);border:1px solid rgba(251,191,36,0.15);}
+.outcome-card.allow{background:rgba(74,222,128,0.05);border:1px solid rgba(74,222,128,0.15);}
+.outcome-emoji{font-size:28px;margin-bottom:12px;}
+.outcome-title{font-family:'Syne',sans-serif;font-size:15px;font-weight:700;margin-bottom:8px;}
+.outcome-card.deny .outcome-title{color:var(--red);}
+.outcome-card.negotiate .outcome-title{color:var(--yellow);}
+.outcome-card.allow .outcome-title{color:var(--green);}
+.outcome-desc{font-size:12px;color:var(--muted2);line-height:1.7;}
+
+/* PULL QUOTE */
+.pull-quote{border-left:3px solid var(--purple);padding:20px 28px;margin:36px 0;background:rgba(167,139,250,0.04);border-radius:0 12px 12px 0;}
+.pull-quote p{font-size:17px;font-style:italic;color:var(--text);line-height:1.7;margin:0;}
+
+/* PROSE */
+.prose{font-size:15px;color:var(--muted2);line-height:1.85;}
+.prose p{margin-bottom:18px;}
+.prose p:last-child{margin-bottom:0;}
+.prose strong{color:var(--text);font-weight:600;}
+
+/* CTA BOX */
+.cta-box{background:var(--card);border:1px solid var(--border2);border-radius:24px;padding:48px;text-align:center;margin-top:80px;position:relative;overflow:hidden;}
+.cta-box::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 60% at 50% 50%,rgba(79,127,255,0.06) 0%,transparent 70%);pointer-events:none;}
+.cta-box h2{font-family:'Syne',sans-serif;font-size:32px;font-weight:800;color:#fff;margin-bottom:12px;position:relative;z-index:1;}
+.cta-box p{font-size:15px;color:var(--muted2);margin-bottom:28px;position:relative;z-index:1;}
+.btn-hero{padding:14px 32px;background:var(--blue);border:none;border-radius:10px;color:#fff;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit;transition:all 0.2s;box-shadow:0 4px 32px rgba(79,127,255,0.4);text-decoration:none;display:inline-flex;align-items:center;gap:8px;position:relative;z-index:1;}
+.btn-hero:hover{background:var(--blue2);transform:translateY(-2px);}
+
+/* DIVIDER */
+.section-divider{height:1px;background:var(--border);margin:80px 0 0;}
+
+/* FOOTER */
+footer{padding:40px 60px;border-top:1px solid var(--border);position:relative;z-index:1;}
+.footer-row{max-width:1100px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;}
+.footer-row p{font-size:13px;color:var(--muted);}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.reveal{opacity:0;transform:translateY(24px);transition:all 0.6s ease;}
+.reveal.visible{opacity:1;transform:translateY(0);}
+
+@media(max-width:900px){
+  nav,.page-hero,.page-layout,footer{padding-left:24px;padding-right:24px;}
+  .page-nav-inner{padding-left:24px;}
+  .page-hero{padding-top:56px;}
+  .features-grid,.outcome-grid{grid-template-columns:1fr;}
+  .step-row{grid-template-columns:48px 1fr;gap:16px;}
+}
+</style>
+</head>
+<body>
+<div class="grid-bg"></div>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="index.html">
+    <svg width="24" height="24" viewBox="0 0 28 28" fill="none"><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#6c9fff"/><stop offset="100%" stop-color="#4f7fff"/></linearGradient></defs><polygon points="4,24 14,4 24,24 19,24 14,13 9,24" fill="url(#lg)"/></svg>
+    <span>Veloris</span>
+  </a>
+  <div class="nav-right">
+    <a class="back-link" href="index.html">← Back to home</a>
+    <a class="btn-primary" href="index.html#download">Start Free Trial</a>
+  </div>
+</nav>
+
+<!-- PAGE NAV -->
+<div class="page-nav">
+  <div class="page-nav-inner">
+    <a href="#how" class="active">How It Works</a>
+    <a href="#features">Key Features</a>
+    <a href="#negotiator">Distraction Negotiator AI</a>
+  </div>
+</div>
+
+<!-- HERO -->
+<div class="page-hero reveal">
+  <div class="page-tag">Deep Dive</div>
+  <h1>How Veloris<br><span class="accent">actually works.</span></h1>
+  <p class="lead">Not a black box. Here's the full picture — every system, every decision, every layer of how Veloris keeps you locked in.</p>
+</div>
+
+<div class="page-layout">
+
+  <!-- ── HOW IT WORKS ── -->
+  <div class="page-section reveal" id="how">
+    <div class="section-eyebrow">The Process</div>
+    <h2>From setup to focus<br>in under 3 minutes.</h2>
+    <p class="section-lead">Veloris is built around a simple loop: you define your rules, start a session, and the system enforces everything automatically. Here's exactly what happens at each step.</p>
+
+    <div class="steps-grid">
+      <div class="step-row reveal">
+        <div class="step-num-wrap">
+          <div class="step-circle">01</div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step-content">
+          <div class="step-title">Create your account &amp; sign in</div>
+          <div class="step-desc">Sign in with Google, email, or a magic link — whichever you prefer. Your account is the anchor for your rules, streaks, and analytics. No data is stored on Veloris servers; your productivity data lives locally on your device in a SQLite database.</div>
+          <div class="step-note">⚡ Firebase Authentication · Local SQLite · No cloud sync of personal data</div>
+        </div>
+      </div>
+
+      <div class="step-row reveal">
+        <div class="step-num-wrap">
+          <div class="step-circle">02</div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step-content">
+          <div class="step-title">Define your blocking rules</div>
+          <div class="step-desc">Choose which apps and websites to block. You can select from a pre-loaded list of 25+ common distractions or add any custom app or domain manually. Set a schedule — block all day, only during work hours, or only when a focus session is active. Rules are saved instantly and take effect immediately.</div>
+          <div class="step-note">🚫 Process-level app blocking · DNS-level site blocking · Custom schedules</div>
+        </div>
+      </div>
+
+      <div class="step-row reveal">
+        <div class="step-num-wrap">
+          <div class="step-circle">03</div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step-content">
+          <div class="step-title">Start a focus session</div>
+          <div class="step-desc">Hit start on the Pomodoro timer. The moment a session begins, Veloris activates your rules. Blocked apps are force-killed at the process level every 3 seconds — meaning even if they relaunch themselves, Veloris kills them again. Blocked websites are redirected at the system level via the Windows hosts file, bypassing any browser entirely.</div>
+          <div class="step-note">⏱ 25 / 5 / 15 min modes · Process killed every 3s · Hosts file blocking</div>
+        </div>
+      </div>
+
+      <div class="step-row reveal">
+        <div class="step-num-wrap">
+          <div class="step-circle">04</div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step-content">
+          <div class="step-title">The Negotiator intercepts temptation</div>
+          <div class="step-desc">When you feel the urge to break focus, you open the Distraction Negotiator instead of just disabling the blocker. The AI evaluates your situation — your current streak, your active rules, how long you've been working — and responds accordingly. Sometimes it holds the line. Sometimes it grants a short, timed break and re-locks the app when time expires.</div>
+          <div class="step-note">🤖 AI evaluates context · Grants or denies · Timed breaks with auto-relock</div>
+        </div>
+      </div>
+
+      <div class="step-row reveal">
+        <div class="step-num-wrap">
+          <div class="step-circle">05</div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step-content">
+          <div class="step-title">Build discipline over time</div>
+          <div class="step-desc">After each session, your analytics update. Streaks are tracked daily. Habits you set in the Discipline system award XP when completed and deduct it when skipped. The XP system, challenges, and level progression aren't just decoration — they give you something concrete to measure your consistency against, day by day.</div>
+          <div class="step-note">🔥 Daily streaks · XP system · Level progression · 30-day trend charts</div>
+        </div>
+      </div>
+
+      <div class="step-row reveal">
+        <div class="step-num-wrap">
+          <div class="step-circle">06</div>
+        </div>
+        <div class="step-content">
+          <div class="step-title">Lock it down with Parental PIN (Pro)</div>
+          <div class="step-desc">For anyone who doesn't trust their future self — or for parents setting up focus mode for their kids — the Parental PIN locks all Veloris settings behind a 4-digit code. No rules can be changed, no features disabled, without entering it first. The session starts, and the system is sealed.</div>
+          <div class="step-note">🔒 PIN-locked settings · Pro feature · Zero bypass without code</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-divider"></div>
+
+  <!-- ── KEY FEATURES ── -->
+  <div class="page-section reveal" id="features" style="margin-top:80px;">
+    <div class="section-eyebrow green">What's Inside</div>
+    <h2>Every feature.<br>What it does. Why it's there.</h2>
+    <p class="section-lead">No marketing fluff — just a clear breakdown of what each part of Veloris actually does and the problem it solves.</p>
+
+    <div class="features-grid">
+      <div class="feat-card reveal">
+        <div class="feat-icon">⏱</div>
+        <div class="feat-name">Pomodoro Focus Timer</div>
+        <div class="feat-desc">A circular progress ring with 25-minute focus intervals, 5-minute short breaks, and 15-minute long breaks. Logs every session with timestamp and duration so you can see your actual work history — not just intentions. The "What are you working on?" field ties each session to a task, making your session log genuinely useful for review.</div>
+        <div class="feat-tag">FOCUS CORE</div>
+      </div>
+
+      <div class="feat-card reveal" style="transition-delay:0.05s">
+        <div class="feat-icon">🚫</div>
+        <div class="feat-name">Process-Level App Blocking</div>
+        <div class="feat-desc">Veloris doesn't just hide apps — it kills their system process. Every 3 seconds, a background loop checks for running processes that match your blocked list and terminates them. This includes launcher processes and update helpers, so apps that auto-relaunch get killed before they can open. Works on any Windows 10/11 machine with no browser extension needed.</div>
+        <div class="feat-tag">SYSTEM-LEVEL</div>
+      </div>
+
+      <div class="feat-card reveal" style="transition-delay:0.1s">
+        <div class="feat-icon">🌐</div>
+        <div class="feat-name">DNS-Level Website Blocking</div>
+        <div class="feat-desc">Blocked websites are added to the Windows hosts file, which redirects their domains before any browser can load them. This is browser-agnostic — Chrome, Firefox, Edge, Brave, all blocked simultaneously with a single rule. No browser extension that can be disabled, no per-browser settings to manage. Requires Administrator privileges to write to the hosts file, which Veloris requests on startup.</div>
+        <div class="feat-tag">ALL BROWSERS</div>
+      </div>
+
+      <div class="feat-card purple-card reveal" style="transition-delay:0.05s">
+        <div class="feat-icon purple">🤖</div>
+        <div class="feat-name">Distraction Negotiator AI</div>
+        <div class="feat-desc">An AI coach that intercepts the moment of temptation before you disable your own rules. It knows your active rules, your current streak, your goals, and how long you've been focused. It responds with context — sometimes firm, sometimes willing to negotiate a timed break. The goal is to make you pause and think before giving in, not just hit a button to unblock.</div>
+        <div class="feat-tag purple">PLUS &amp; PRO</div>
+      </div>
+
+      <div class="feat-card reveal" style="transition-delay:0.1s">
+        <div class="feat-icon">📊</div>
+        <div class="feat-name">Analytics Dashboard</div>
+        <div class="feat-desc">Weekly focus hours bar chart, 30-day trend line, app usage breakdown showing which applications consumed your time. All data is stored locally — nothing is synced to any server. The goal is to show you what your weeks actually look like versus what you think they look like. Pro users can export their data as CSV.</div>
+        <div class="feat-tag">LOCAL DATA</div>
+      </div>
+
+      <div class="feat-card reveal" style="transition-delay:0.15s">
+        <div class="feat-icon">🔥</div>
+        <div class="feat-name">Discipline System</div>
+        <div class="feat-desc">A daily habit tracker with XP rewards and deductions, streak counters, a level progression system, and a long-term challenge system. Each habit you complete awards +50 XP. Each one skipped deducts 50 XP. Level thresholds are set at 500 XP increments. The discipline score isn't cosmetic — it's a real measure of your daily consistency that compounds over weeks.</div>
+        <div class="feat-tag">GAMIFIED</div>
+      </div>
+
+      <div class="feat-card purple-card reveal">
+        <div class="feat-icon purple">🔒</div>
+        <div class="feat-name">Parental PIN Lock</div>
+        <div class="feat-desc">A 4-digit PIN that locks every setting in Veloris behind a gate. No rules can be edited, no features disabled, no blocking paused without the PIN. Designed for two use cases: parents setting up a focused study environment for children, and individuals who want to remove their own ability to self-sabotage mid-session. Pro only.</div>
+        <div class="feat-tag purple">PRO ONLY</div>
+      </div>
+
+      <div class="feat-card reveal" style="transition-delay:0.05s">
+        <div class="feat-icon green">🎯</div>
+        <div class="feat-name">Goals Tracker</div>
+        <div class="feat-desc">Set long-form goals on the Dashboard and track progress toward them over time. Each goal has a name, estimated duration, and a start date. The goals table sits on the Dashboard as a daily reminder of what you're actually working toward — beyond just the current Pomodoro session.</div>
+        <div class="feat-tag green">DASHBOARD</div>
+      </div>
+
+      <div class="feat-card reveal" style="transition-delay:0.1s">
+        <div class="feat-icon">✨</div>
+        <div class="feat-name">7-Day Free Trial</div>
+        <div class="feat-desc">Every new account gets full Plus-level access for 7 days — no credit card required. After 7 days, the account silently drops to the free tier without any hard lock or data loss. All your streaks, habits, and session logs remain intact. The trial is designed to let you actually experience what Veloris feels like before you decide to pay for it.</div>
+        <div class="feat-tag">NO CARD NEEDED</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-divider"></div>
+
+  <!-- ── DISTRACTION NEGOTIATOR AI ── -->
+  <div class="page-section reveal" id="negotiator" style="margin-top:80px;">
+    <div class="section-eyebrow purple">The Core Intelligence</div>
+    <h2>The Distraction<br>Negotiator AI.</h2>
+    <p class="section-lead">Every other productivity tool just blocks you. The Negotiator does something fundamentally different — it meets you in the moment and makes you think.</p>
+
+    <div class="ai-hero-box reveal">
+      <div class="ai-label">🤖 Distraction Negotiator</div>
+      <h3>The moment before you give up is the most important moment.</h3>
+      <p>Most people don't disable their blocker because they decided to be unproductive. They disable it because something got hard, or boring, or uncomfortable — and their brain started bargaining. The Negotiator is built specifically for that moment. It doesn't just say no. It talks to you.</p>
+    </div>
+
+    <div class="pull-quote reveal">
+      <p>The goal isn't to be an obstacle. It's to be the pause your brain needs before a decision that's going to cost you an hour.</p>
+    </div>
+
+    <h3 style="font-family:'Syne',sans-serif;font-size:22px;font-weight:700;color:#fff;margin:40px 0 24px;">How the Negotiator makes its decision</h3>
+
+    <div class="ai-flow reveal">
+      <div class="ai-flow-step">
+        <div class="ai-flow-icon trigger">🔥</div>
+        <div class="ai-flow-content">
+          <div class="ai-flow-title">You trigger it</div>
+          <div class="ai-flow-desc">Instead of disabling your blocks directly, you open the Negotiator. This single step forces a pause — the action you wanted to take now requires a conversation first.</div>
+        </div>
+      </div>
+      <div class="ai-flow-step">
+        <div class="ai-flow-icon think">🧠</div>
+        <div class="ai-flow-content">
+          <div class="ai-flow-title">It reads your context</div>
+          <div class="ai-flow-desc">The Negotiator checks your current streak, your active blocking rules, your stated goals, and how long you've been focused in the current session. It uses all of this to understand whether your request is reasonable or a pattern of avoidance.</div>
+        </div>
+      </div>
+      <div class="ai-flow-step">
+        <div class="ai-flow-icon decide">💬</div>
+        <div class="ai-flow-content">
+          <div class="ai-flow-title">It responds with reasoning</div>
+          <div class="ai-flow-desc">The response isn't a generic motivational quote. It's a direct, contextual reply that references what you're actually doing. It might point out that you broke your streak yesterday. It might acknowledge that you've been working for 90 minutes and a break is reasonable. It reasons with you — not at you.</div>
+        </div>
+      </div>
+      <div class="ai-flow-step">
+        <div class="ai-flow-icon result">✅</div>
+        <div class="ai-flow-content">
+          <div class="ai-flow-title">It makes a decision</div>
+          <div class="ai-flow-desc">Based on everything it knows, the Negotiator issues one of three outcomes. Each outcome is intentional — not random, not passive.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="outcome-grid reveal">
+      <div class="outcome-card deny">
+        <div class="outcome-emoji">🚫</div>
+        <div class="outcome-title">Denied</div>
+        <div class="outcome-desc">The block holds. The Negotiator explains why — your streak is at risk, you haven't hit your session goal, or your request pattern suggests avoidance rather than a genuine need. No bypass available.</div>
+      </div>
+      <div class="outcome-card negotiate">
+        <div class="outcome-emoji">⏱</div>
+        <div class="outcome-title">Timed Break Granted</div>
+        <div class="outcome-desc">A short window is unlocked — typically 5 or 10 minutes. A countdown runs, and when it expires, the block is automatically re-applied. You get the break. You don't get to extend it by forgetting.</div>
+      </div>
+      <div class="outcome-card allow">
+        <div class="outcome-emoji">✅</div>
+        <div class="outcome-title">Allowed</div>
+        <div class="outcome-desc">The Negotiator determines that the request is reasonable — you've been working long enough, your reason is legitimate, or you've earned it. The block is lifted. No guilt. No friction.</div>
+      </div>
+    </div>
+
+    <div style="margin-top:48px;" class="reveal">
+      <h3 style="font-family:'Syne',sans-serif;font-size:22px;font-weight:700;color:#fff;margin-bottom:20px;">The philosophy behind it</h3>
+      <div class="prose">
+        <p>Most productivity tools treat distraction as a binary problem: you're either blocked or you're not. Veloris treats it as a behavioral one. The goal isn't to make it impossible to access distracting things — a determined person will always find a way around a blocker. The goal is to make you pause long enough to make a conscious decision instead of a reflexive one.</p>
+        <p>Over time, that pause becomes a habit. The moment you feel the urge to switch away from work, you'll catch it — not because the app stopped you, but because you've practiced catching it. That's what the Negotiator is actually training: not restriction, but awareness.</p>
+        <p><strong>Plus users get 5 Negotiator sessions per day. Pro users get unlimited.</strong> Free users get 2 sessions per day — enough to experience it, not enough to rely on it without upgrading.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div class="cta-box reveal">
+    <h2>Ready to try it yourself?</h2>
+    <p>7 days free. No credit card. The full experience — AI coach, all features, all unlocked from day one.</p>
+    <a href="index.html#download" class="btn-hero">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2v8m0 0l-3-3m3 3l3-3M2 12h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Download Free — 7-Day Trial
+    </a>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-row">
+    <a class="nav-logo" href="index.html">
+      <svg width="20" height="20" viewBox="0 0 28 28" fill="none"><polygon points="4,24 14,4 24,24 19,24 14,13 9,24" fill="#4f7fff"/></svg>
+      <span style="font-family:'Syne',sans-serif;font-weight:700;font-size:16px;color:#fff;margin-left:8px;">Veloris</span>
+    </a>
+    <p>© 2026 Veloris. Built by Sh4d0w. All rights reserved.</p>
+    <div style="display:flex;gap:20px;flex-wrap:wrap;">
+      <a href="index.html" style="color:var(--muted2);text-decoration:none;font-size:13px;">Home</a>
+      <a href="about.html" style="color:var(--muted2);text-decoration:none;font-size:13px;">About</a>
+      <a href="policies.html" style="color:var(--muted2);text-decoration:none;font-size:13px;">Legal</a>
+      <a href="mailto:veloris.support@gmail.com" style="color:var(--blue);text-decoration:none;font-size:13px;">Contact</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+// Scroll reveal
+const obs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');});},{threshold:0.07});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+
+// Active page nav on scroll
+const sections=document.querySelectorAll('.page-section[id]');
+const navLinks=document.querySelectorAll('.page-nav a');
+window.addEventListener('scroll',()=>{
+  let cur='';
+  sections.forEach(s=>{if(window.scrollY>=s.offsetTop-160)cur=s.id;});
+  navLinks.forEach(l=>{l.classList.remove('active');if(l.getAttribute('href')==='#'+cur)l.classList.add('active');});
+});
+</script>
+</body>
+</html>
