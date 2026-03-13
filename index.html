@@ -854,3 +854,17 @@ document.getElementById('waitlistBtn').addEventListener('click',async()=>{
 });
 
 // Cancel modal backdrop
+document.getElementById('cancelOverlay')?.addEventListener('click', function(e){
+  if(e.target===this) this.classList.remove('open');
+});
+document.getElementById('cancelModalClose')?.addEventListener('click',()=>{
+  document.getElementById('cancelOverlay').classList.remove('open');
+});
+document.querySelectorAll('.cancel-link').forEach(el=>{
+  el.addEventListener('click',()=>{
+    document.getElementById('cancelOverlay').classList.add('open');
+  });
+});
+</script>
+</body>
+</html>
