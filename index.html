@@ -231,13 +231,22 @@ footer{padding:60px;border-top:1px solid var(--border);}
 .footer-bottom p{font-size:13px;color:var(--muted);}
 
 /* MODAL */
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:1000;display:none;align-items:center;justify-content:center;backdrop-filter:blur(4px);}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:1000;display:none;align-items:center;justify-content:center;backdrop-filter:blur(6px);}
 .modal-overlay.open{display:flex;}
-.modal{background:#0f1120;border:1px solid var(--border2);border-radius:20px;padding:36px;max-width:460px;width:90%;}
-.modal h3{font-family:'Syne',sans-serif;font-size:20px;font-weight:700;color:#fff;margin-bottom:12px;}
-.modal p{font-size:14px;color:var(--muted2);line-height:1.7;margin-bottom:20px;}
+.modal{background:#0f1120;border:1px solid var(--border2);border-radius:20px;padding:36px;max-width:500px;width:92%;max-height:90vh;overflow-y:auto;}
+.modal h3{font-family:'Syne',sans-serif;font-size:20px;font-weight:700;color:#fff;margin-bottom:8px;}
+.modal .modal-sub{font-size:14px;color:var(--muted2);line-height:1.7;margin-bottom:20px;}
+.modal-step-title{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--blue2);letter-spacing:0.07em;text-transform:uppercase;margin:20px 0 8px;}
 .modal ol{padding-left:20px;color:var(--text);font-size:14px;line-height:2.2;}
 .modal ol li strong{color:#fff;}
+.modal-info-box{background:rgba(79,127,255,0.07);border:1px solid var(--border2);border-radius:12px;padding:16px 20px;margin:16px 0;}
+.modal-info-box p{font-size:13px;color:var(--text);line-height:1.7;margin:0;}
+.modal-info-box p+p{margin-top:8px;}
+.modal-info-box a{color:var(--blue2);text-decoration:none;}
+.modal-info-box a:hover{text-decoration:underline;}
+.modal-info-box strong{color:#fff;}
+.modal-info-box code{font-family:'DM Mono',monospace;font-size:12px;background:rgba(255,255,255,0.06);padding:2px 6px;border-radius:4px;color:var(--blue2);}
+.modal-warn{background:rgba(251,191,36,0.06);border:1px solid rgba(251,191,36,0.2);border-radius:10px;padding:14px 16px;margin-top:14px;font-size:13px;color:#d4a800;line-height:1.6;}
 .modal-close{width:100%;padding:12px;background:var(--blue);border:none;border-radius:10px;color:#fff;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;margin-top:24px;transition:all 0.2s;}
 .modal-close:hover{background:var(--blue2);}
 
@@ -263,15 +272,38 @@ footer{padding:60px;border-top:1px solid var(--border);}
 <!-- CANCEL MODAL -->
 <div class="modal-overlay" id="cancelModal">
   <div class="modal">
-    <h3>🔓 How to cancel</h3>
-    <p>We made cancellation dead simple. No retention flows, no guilt trips, no "are you sure?" spam.</p>
+    <h3>🔓 How to cancel your subscription</h3>
+    <p class="modal-sub">No retention flows, no guilt trips. Cancel in under a minute using any method below.</p>
+
+    <div class="modal-step-title">Option 1 — Cancel from the app (fastest)</div>
     <ol>
       <li>Open <strong>Veloris</strong> on your desktop</li>
       <li>Go to <strong>Settings → Subscription</strong></li>
       <li>Click <strong>"Cancel Subscription"</strong></li>
-      <li>Done — active until end of billing period</li>
+      <li>Done — access continues until end of billing period</li>
     </ol>
-    <button class="modal-close" onclick="document.getElementById('cancelModal').classList.remove('open')">Got it</button>
+
+    <div class="modal-step-title">Option 2 — Cancel via email</div>
+    <p style="font-size:13px;color:var(--muted2);margin-bottom:10px;">If you can't access the app, email us with the following:</p>
+    <div class="modal-info-box">
+      <p>📧 <strong>Email:</strong> <a href="mailto:veloris.support@gmail.com">veloris.support@gmail.com</a></p>
+      <p>📋 <strong>Subject:</strong> Subscription Cancellation Request</p>
+      <p>🔑 <strong>Your Gumroad Order ID</strong> — found in your Gumroad receipt email (looks like <code>XXXXXXXX-XXXX-XXXX</code>)</p>
+      <p>👤 <strong>Your registered email address</strong> (used to sign in to Veloris)</p>
+      <p>📝 Reason for cancellation (optional)</p>
+    </div>
+    <p style="font-size:12px;color:var(--muted);margin-top:8px;">We'll confirm your cancellation within <strong style="color:var(--text);">24–48 hours</strong>.</p>
+
+    <div class="modal-step-title">Finding your Gumroad Order ID</div>
+    <div class="modal-info-box">
+      <p>After purchase, Gumroad sends a receipt to your email from <strong>gumroad.com</strong>. Your Order ID is in that email — search your inbox for <code>Gumroad receipt</code> or <code>veloris</code>.</p>
+    </div>
+
+    <div class="modal-warn">
+      ⚠️ Partial-month refunds aren't issued for mid-cycle cancellations — your plan stays active until the billing period ends. For full refunds within 7 days of purchase, include your Gumroad Order ID in the email.
+    </div>
+
+    <button class="modal-close" id="cancelModalClose">Got it</button>
   </div>
 </div>
 
@@ -308,7 +340,7 @@ footer{padding:60px;border-top:1px solid var(--border);}
   </div>
   <p class="hero-sub"><span>7-day free trial</span> · No credit card · Windows 10/11</p>
 
-  <!-- MOCKUP — matches real Dashboard layout -->
+  <!-- MOCKUP -->
   <div class="mockup-wrapper">
     <div class="mockup-glow"></div>
     <div class="window-chrome">
@@ -319,7 +351,6 @@ footer{padding:60px;border-top:1px solid var(--border);}
         <div style="flex:1;text-align:center;font-size:12px;color:var(--muted);font-family:'DM Mono',monospace;">Veloris — Dashboard</div>
       </div>
       <div class="fake-dashboard">
-        <!-- Sidebar matches real app -->
         <div class="fake-sidebar">
           <div style="display:flex;align-items:center;gap:8px;margin-bottom:20px;">
             <svg width="16" height="16" viewBox="0 0 28 28" fill="none"><polygon points="4,24 14,4 24,24 19,24 14,13 9,24" fill="#4f7fff"/></svg>
@@ -338,7 +369,6 @@ footer{padding:60px;border-top:1px solid var(--border);}
             </div>
           </div>
         </div>
-        <!-- Main matches real Dashboard -->
         <div class="fake-main">
           <div style="font-size:11px;color:var(--muted);font-weight:700;letter-spacing:0.06em;text-transform:uppercase;">Daily Brief</div>
           <div class="fake-cards">
@@ -363,7 +393,6 @@ footer{padding:60px;border-top:1px solid var(--border);}
               <div style="font-size:10px;color:var(--muted);margin-top:3px;">Level 1</div>
             </div>
           </div>
-          <!-- Focus Trends chart -->
           <div class="fake-card">
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
               <span style="font-size:12px;color:var(--muted2);font-weight:600;">Focus Trends</span>
@@ -396,7 +425,7 @@ footer{padding:60px;border-top:1px solid var(--border);}
   </div>
 </div>
 
-<!-- HONEST STATS — real product facts only -->
+<!-- STATS -->
 <div class="stats-bar">
   <div class="stat-item"><div class="stat-num">7</div><div class="stat-label">Day free trial — no card</div></div>
   <div class="stat-item"><div class="stat-num">3s</div><div class="stat-label">Blocking interval — system level</div></div>
@@ -538,7 +567,7 @@ footer{padding:60px;border-top:1px solid var(--border);}
         <button class="billing-tab active" id="tab-monthly" onclick="setMonthly()">Monthly</button>
         <button class="billing-tab" id="tab-yearly" onclick="setYearly()">Yearly</button>
       </div>
-      <span class="save-badge">SAVE 10%</span>
+      <span class="save-badge">SAVE ~17%</span>
     </div>
 
     <div class="pricing-grid">
@@ -593,7 +622,7 @@ footer{padding:60px;border-top:1px solid var(--border);}
           <div class="pricing-feat dim">Parental PIN lock</div>
         </div>
         <button class="btn-pricing btn-pricing-filled" id="btn-plus" style="margin-bottom:10px;">Get Plus — $8/mo</button>
-        <div class="cancel-text"><span class="cancel-link" onclick="document.getElementById('cancelModal').classList.add('open')">Cancel anytime</span> · No lock-in</div>
+        <div class="cancel-text"><span class="cancel-link">Cancel anytime</span> · No lock-in</div>
       </div>
 
       <!-- PRO -->
@@ -620,7 +649,7 @@ footer{padding:60px;border-top:1px solid var(--border);}
           <div class="pricing-feat">Team mode <span style="font-size:11px;color:var(--muted);">(coming soon)</span></div>
         </div>
         <button class="btn-pricing" id="btn-pro" style="background:linear-gradient(135deg,#7c3aed,#a78bfa);border:none;color:#fff;margin-bottom:10px;">Get Pro — $15/mo</button>
-        <div class="cancel-text"><span class="cancel-link" onclick="document.getElementById('cancelModal').classList.add('open')">Cancel anytime</span> · No lock-in</div>
+        <div class="cancel-text"><span class="cancel-link">Cancel anytime</span> · No lock-in</div>
       </div>
     </div>
     <p class="reveal" style="text-align:center;margin-top:28px;font-size:13px;color:var(--muted);">All plans · Automatic updates · Secure Firebase auth · Local SQLite storage · Windows 10/11</p>
@@ -675,15 +704,15 @@ footer{padding:60px;border-top:1px solid var(--border);}
         <div class="savings-vs">VS</div>
         <div class="savings-us">
           <div class="savings-card-label green">Veloris Plus</div>
-          <div class="savings-amount green">$96</div>
-          <div class="savings-period">per year · $8/mo</div>
+          <div class="savings-amount green">$80</div>
+          <div class="savings-period">per year · billed annually</div>
           <div style="margin-top:12px;font-size:12px;color:var(--muted2);">Everything in one app.<br>System-level blocking.<br>AI + XP + analytics.</div>
         </div>
       </div>
 
       <div style="text-align:center;">
         <div class="savings-pill">
-          💰 Save $96/yr by switching to Veloris Plus
+          💰 Save $112/yr by switching to Veloris Plus
         </div>
         <div style="margin-top:10px;font-size:12px;color:var(--muted);">Comparison based on publicly listed prices of productivity apps in 2026. Names omitted.</div>
       </div>
@@ -706,9 +735,9 @@ footer{padding:60px;border-top:1px solid var(--border);}
       <div class="faq-item reveal"><div class="faq-q">Does website blocking work on all browsers?</div><div class="faq-a">Yes. It edits the Windows hosts file — completely browser-agnostic. Chrome, Firefox, Edge, all blocked simultaneously. Requires running Veloris as Administrator to enable.</div></div>
       <div class="faq-item reveal"><div class="faq-q">What is Negotiation AI exactly?</div><div class="faq-a">An AI discipline coach whose only job is keeping you working. It uses tough-love responses and knows your active rules, goals, and streak. Free users get 2 sessions/day, Plus gets 5/day, Pro gets unlimited. It will not go easy on you.</div></div>
       <div class="faq-item reveal"><div class="faq-q">What does Parental PIN do exactly?</div><div class="faq-a">A 4+ digit PIN that locks all Veloris settings. No rules can be changed, no features disabled, without entering it first. Perfect for parents setting up kids' study mode — or for anyone who wants to remove their own escape hatch. Pro only.</div></div>
-      <div class="faq-item reveal"><div class="faq-q">Is there a discount for yearly billing?</div><div class="faq-a">Yes — paying yearly saves you over 10%. Plus goes from $8/mo to $80/yr (~$6.67/mo). Pro goes from $15/mo to $150/yr (~$12.50/mo). Click the Yearly tab on the pricing section above.</div></div>
+      <div class="faq-item reveal"><div class="faq-q">Is there a discount for yearly billing?</div><div class="faq-a">Yes — paying yearly saves you significantly. Plus goes from $8/mo to $80/yr (~$6.67/mo). Pro goes from $15/mo to $150/yr (~$12.50/mo). Click the Yearly tab on the pricing section above.</div></div>
       <div class="faq-item reveal"><div class="faq-q">Is my data private?</div><div class="faq-a">All focus data and analytics are stored locally on your device using SQLite. We don't sell your data. Auth is handled by Firebase. Full details in our Privacy Policy.</div></div>
-      <div class="faq-item reveal"><div class="faq-q">How do I cancel my subscription?</div><div class="faq-a">Veloris → Settings → Subscription → Cancel. Your plan stays active until end of the billing period. 3 clicks, no emails, no guilt-trip retention screens.</div></div>
+      <div class="faq-item reveal"><div class="faq-q">How do I cancel my subscription?</div><div class="faq-a">Veloris → Settings → Subscription → Cancel. Your plan stays active until end of the billing period. 3 clicks, no emails, no guilt-trip retention screens. Or email veloris.support@gmail.com with your Gumroad Order ID.</div></div>
       <div class="faq-item reveal"><div class="faq-q">When is Mac / Linux coming?</div><div class="faq-a">Mac is next on the roadmap. Join the waitlist below and you'll be the first to know when it drops.</div></div>
     </div>
   </div>
@@ -751,8 +780,8 @@ footer{padding:60px;border-top:1px solid var(--border);}
       </a>
       <p>Focus. Block. Dominate.<br>Built for builders who refuse to waste their potential.</p>
     </div>
-    <div class="footer-col"><h4>Product</h4><a href="#features">Features</a><a href="how-it-works.html">How It Works</a><a href="how-it-works.html#negotiator">Negotiator AI</a><a href="#compare">Compare</a><a href="#pricing">Pricing</a><a href="#download">Download</a></div>
-    <div class="footer-col"><h4>About the Creator</h4><a href="about.html">Who built this</a><a href="about.html#why">Why I built it</a><a href="/cdn-cgi/l/email-protection#2f594a43405d465c015c5a5f5f405d5b6f48424e4643014c4042">Contact me</a></div>
+    <div class="footer-col"><h4>Product</h4><a href="#features">Features</a><a href="#how">How It Works</a><a href="#compare">Compare</a><a href="#pricing">Pricing</a><a href="#download">Download</a></div>
+    <div class="footer-col"><h4>Support</h4><a href="mailto:veloris.support@gmail.com">Contact Us</a><a href="policies.html#refund">Refund Policy</a><a href="policies.html">Legal Policies</a></div>
     <div class="footer-col"><h4>Legal</h4><a href="policies.html">Privacy Policy</a><a href="policies.html#terms">Terms of Service</a><a href="policies.html#cookies">Cookie Policy</a><a href="policies.html#refund">Refund Policy</a></div>
   </div>
   <div class="footer-bottom">
@@ -799,7 +828,7 @@ document.querySelectorAll('.faq-q').forEach(q=>{
   });
 });
 
-// Billing tabs — exposed on window so inline onclick works from module scope
+// Billing tabs
 const tabM=document.getElementById('tab-monthly');
 const tabY=document.getElementById('tab-yearly');
 const btnPlus=document.getElementById('btn-plus');
@@ -832,6 +861,21 @@ window.setYearly=function(){
 };
 window.setMonthly();
 
+// Cancel modal — fixed ID references
+const cancelModal = document.getElementById('cancelModal');
+const cancelModalClose = document.getElementById('cancelModalClose');
+
+// Open modal on all cancel-link clicks
+document.querySelectorAll('.cancel-link').forEach(el=>{
+  el.addEventListener('click',()=>cancelModal.classList.add('open'));
+});
+// Close on button click
+cancelModalClose.addEventListener('click',()=>cancelModal.classList.remove('open'));
+// Close on backdrop click
+cancelModal.addEventListener('click',function(e){
+  if(e.target===this) this.classList.remove('open');
+});
+
 // Waitlist
 document.getElementById('waitlistBtn').addEventListener('click',async()=>{
   const input=document.getElementById('waitlistEmail');
@@ -851,19 +895,6 @@ document.getElementById('waitlistBtn').addEventListener('click',async()=>{
     console.error(err);msg.textContent='Something went wrong. Try again.';msg.style.color='#f87171';
     btn.disabled=false;btn.textContent='Notify Me';
   }
-});
-
-// Cancel modal backdrop
-document.getElementById('cancelOverlay')?.addEventListener('click', function(e){
-  if(e.target===this) this.classList.remove('open');
-});
-document.getElementById('cancelModalClose')?.addEventListener('click',()=>{
-  document.getElementById('cancelOverlay').classList.remove('open');
-});
-document.querySelectorAll('.cancel-link').forEach(el=>{
-  el.addEventListener('click',()=>{
-    document.getElementById('cancelOverlay').classList.add('open');
-  });
 });
 </script>
 </body>
