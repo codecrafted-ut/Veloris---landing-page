@@ -50,8 +50,10 @@ nav{position:sticky;top:0;z-index:100;padding:16px 60px;display:flex;align-items
 .contact-card{background:rgba(15,18,30,0.8);border:1px solid var(--border);border-radius:14px;padding:24px;margin-top:32px;}
 .contact-card h4{font-family:'Syne',sans-serif;font-size:15px;font-weight:700;color:#fff;margin-bottom:8px;}
 .contact-card p{font-size:14px;color:var(--muted2);margin:0;}
+.contact-card p+p{margin-top:8px;}
 .contact-card a{color:var(--blue);text-decoration:none;}
 .contact-card a:hover{text-decoration:underline;}
+.contact-card strong{color:var(--text);}
 .divider{height:1px;background:var(--border);margin:48px 0;}
 
 @media(max-width:768px){
@@ -74,7 +76,7 @@ nav{position:sticky;top:0;z-index:100;padding:16px 60px;display:flex;align-items
 <div class="hero">
   <h1>Legal Policies</h1>
   <p>We believe in full transparency about how Veloris works, what data we collect, and what your rights are. Read everything here — no hidden clauses.</p>
-  <div class="last-updated">✓ Last updated: March 2025</div>
+  <div class="last-updated">✓ Last updated: March 2026</div>
 </div>
 
 <div class="layout">
@@ -85,6 +87,7 @@ nav{position:sticky;top:0;z-index:100;padding:16px 60px;display:flex;align-items
     <a href="#terms">Terms of Service</a>
     <a href="#cookies">Cookie Policy</a>
     <a href="#refund">Refund Policy</a>
+    <a href="#cancellation">Cancellation</a>
     <a href="#acceptable">Acceptable Use</a>
     <a href="#disclaimer">Disclaimer</a>
     <a href="#contact">Contact</a>
@@ -124,7 +127,6 @@ nav{position:sticky;top:0;z-index:100;padding:16px 60px;display:flex;align-items
       <h3>4. Third-party services</h3>
       <ul>
         <li><strong>Firebase (Google):</strong> Authentication only. Subject to Google's Privacy Policy.</li>
-
       </ul>
 
       <h3>5. Data retention</h3>
@@ -161,7 +163,7 @@ nav{position:sticky;top:0;z-index:100;padding:16px 60px;display:flex;align-items
       <h3>3. Subscriptions and billing</h3>
       <ul>
         <li>Free plan features are free forever — no credit card required.</li>
-        <li>Plus ($8/mo) and Pro ($15/mo) plans are billed monthly via Stripe.</li>
+        <li>Plus ($8/mo or $80/yr) and Pro ($15/mo or $150/yr) plans are billed via Gumroad.</li>
         <li>You can cancel at any time. Your access continues until the end of the billing period.</li>
         <li>Prices may change with 30 days notice to active subscribers.</li>
       </ul>
@@ -199,7 +201,7 @@ nav{position:sticky;top:0;z-index:100;padding:16px 60px;display:flex;align-items
         <p>💡 <strong>Short version:</strong> The Veloris desktop app has no cookies. Our landing page (this website) uses minimal cookies for analytics only.</p>
       </div>
 
-      <h3>Cookies on veloris.app (this website)</h3>
+      <h3>Cookies on this website</h3>
       <ul>
         <li><strong>Essential cookies:</strong> Required for the website to function. Cannot be disabled. No personal data.</li>
         <li><strong>Analytics cookies:</strong> Anonymous page view data to understand which pages are most useful. We use privacy-respecting analytics with no cross-site tracking.</li>
@@ -234,10 +236,48 @@ nav{position:sticky;top:0;z-index:100;padding:16px 60px;display:flex;align-items
       </ul>
 
       <h3>How to request a refund</h3>
-      <p>Email us at <a href="mailto:support@veloris.app" style="color:var(--blue);text-decoration:none;">support@veloris.app</a> with your account email and reason. We'll process it within 2 business days.</p>
+      <p>Email us at <a href="mailto:veloris.support@gmail.com" style="color:var(--blue);text-decoration:none;">veloris.support@gmail.com</a> with your registered email address, your Gumroad Order ID (found in your Gumroad receipt email), and your reason. We'll process it within 2 business days.</p>
 
       <div class="warn-box">
         <p>⚠️ Refunds cannot be issued for accounts terminated due to violations of our Terms of Service or Acceptable Use Policy.</p>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- CANCELLATION -->
+    <div class="policy-section" id="cancellation">
+      <h2>Cancellation Policy</h2>
+      <div class="tagline">Cancel anytime — no guilt trips, no retention flows, no hoops.</div>
+
+      <div class="highlight-box">
+        <p>🔓 <strong>Short version:</strong> Cancel from inside the app in 3 clicks. Or email us with your Gumroad Order ID and we'll handle it within 48 hours.</p>
+      </div>
+
+      <h3>Option 1 — Cancel from within the app</h3>
+      <p>This is the fastest method:</p>
+      <ul>
+        <li>Open <strong>Veloris</strong> on your desktop</li>
+        <li>Go to <strong>Settings → Subscription</strong></li>
+        <li>Click <strong>"Cancel Subscription"</strong></li>
+        <li>Your access continues until the end of your current billing period</li>
+      </ul>
+
+      <h3>Option 2 — Cancel via email</h3>
+      <p>If you're unable to access the app, email us at <a href="mailto:veloris.support@gmail.com" style="color:var(--blue);text-decoration:none;">veloris.support@gmail.com</a> with the following information:</p>
+      <ul>
+        <li><strong>Subject line:</strong> Subscription Cancellation Request</li>
+        <li><strong>Your Gumroad Order ID</strong> — found in your Gumroad purchase receipt email (format: <code style="background:rgba(255,255,255,0.06);padding:2px 6px;border-radius:4px;font-size:12px;">XXXXXXXX-XXXX-XXXX</code>)</li>
+        <li><strong>Your registered email address</strong> used to sign in to Veloris</li>
+        <li>Reason for cancellation (optional, but appreciated)</li>
+      </ul>
+      <p>We'll process your cancellation and send a confirmation within <strong>24–48 hours</strong>.</p>
+
+      <h3>Finding your Gumroad Order ID</h3>
+      <p>After purchase, Gumroad automatically sends a receipt to your email from <strong>gumroad.com</strong>. Search your inbox for "Gumroad receipt" or "Veloris" to locate it. The Order ID is displayed prominently in that receipt.</p>
+
+      <div class="warn-box">
+        <p>⚠️ Partial-month refunds are not issued for mid-cycle cancellations — your plan stays active and fully usable until the billing period ends. For a full refund, submit your request within 7 days of your original purchase date.</p>
       </div>
     </div>
 
@@ -285,7 +325,7 @@ nav{position:sticky;top:0;z-index:100;padding:16px 60px;display:flex;align-items
       <p>App blocking works by monitoring and terminating processes. Technically determined users may find workarounds. Website blocking via the hosts file requires Administrator privileges and may not block all access methods (e.g. VPNs, mobile data). We make no guarantee of 100% block effectiveness.</p>
 
       <h3>Negotiation AI</h3>
-      <p>Negotiation AI responses are generated by Google's Gemini model. While we've engineered the system to provide helpful, motivating responses, AI outputs can be unpredictable. Do not rely on AI responses for medical, legal, or mental health advice. If you're experiencing serious mental health issues, please contact a qualified professional.</p>
+      <p>Negotiation AI responses are generated by an advanced AI model. While we've engineered the system to provide helpful, motivating responses, AI outputs can be unpredictable. Do not rely on AI responses for medical, legal, or mental health advice. If you're experiencing serious mental health issues, please contact a qualified professional.</p>
 
       <h3>Software warranty</h3>
       <p>Veloris is provided "as is" without warranty of any kind. We are not responsible for data loss, system issues, or any damages resulting from the use of our software.</p>
@@ -299,7 +339,10 @@ nav{position:sticky;top:0;z-index:100;padding:16px 60px;display:flex;align-items
       <p>Have questions about our policies? We're happy to clarify anything.</p>
       <div class="contact-card">
         <h4>Veloris Support</h4>
-        <p>Email: <a href="mailto:veloris.support@gmail.com">veloris.support@gmail.com</a>
+        <p>Email: <a href="mailto:veloris.support@gmail.com">veloris.support@gmail.com</a></p>
+        <p><strong>For cancellations:</strong> Include your Gumroad Order ID and registered email.</p>
+        <p><strong>For refunds:</strong> Include your Gumroad Order ID and purchase date.</p>
+        <p><strong>Response time:</strong> Within 24–48 hours on business days.</p>
       </div>
     </div>
 
@@ -313,12 +356,12 @@ nav{position:sticky;top:0;z-index:100;padding:16px 60px;display:flex;align-items
       <svg width="20" height="20" viewBox="0 0 28 28" fill="none"><polygon points="4,24 14,4 24,24 19,24 14,13 9,24" fill="#4f7fff"/></svg>
       <span style="font-family:'Syne',sans-serif;font-weight:700;font-size:16px;color:#fff;margin-left:8px;">Veloris</span>
     </a>
-    <p style="font-size:13px;color:var(--muted);">© 2025 Veloris. All rights reserved.</p>
+    <p style="font-size:13px;color:var(--muted);">© 2026 Veloris. All rights reserved.</p>
     <div style="display:flex;gap:20px;">
       <a href="index.html" style="color:var(--muted2);text-decoration:none;font-size:13px;">Home</a>
       <a href="#privacy" style="color:var(--muted2);text-decoration:none;font-size:13px;">Privacy</a>
       <a href="#terms" style="color:var(--muted2);text-decoration:none;font-size:13px;">Terms</a>
-      <a href="mailto:support@veloris.app" style="color:var(--blue);text-decoration:none;font-size:13px;">Contact</a>
+      <a href="mailto:veloris.support@gmail.com" style="color:var(--blue);text-decoration:none;font-size:13px;">Contact</a>
     </div>
   </div>
 </footer>
